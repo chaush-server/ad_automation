@@ -1,105 +1,82 @@
+import asyncio
+import json
+
 import httpx
 
-compare = {
-    "": "0",
-    "www.avito.ru": "27",
-    "Сайт компании": "37",
-    "Яндекс Недвижимость": "56",
-    "cian.ru": "72",
-    "квартиры-домики.рф": "81",
-    "realtymag.ru": "94",
-    'East Estate "Восточная недвижимость"': "109",
-    "radver.ru": "112",
-    "e64.ru": "118",
-    "rucountry.ru": "121",
-    "russianrealty.ru": "124",
-    "mlspro.ru": "148",
-    "allpn.ru": "196",
-    "move.ru": "220",
-    "naydidom.com": "251",
-    "mesto.ru": "255",
-    "domex.ru": "259",
-    "gde.ru": "301",
-    "reforum.ru": "326",
-    "gdeetotdom.ru": "331",
-    "1pbn.ru": "336",
-    "glavbaza.su": "361",
-    "rusnedviga.ru": "455",
-    "Сбербанк": "470",
-    "IMLS.RU": "540",
-    "house2you.ru": "579",
-    "multilisting.su": "605",
-    "domoved.su": "635",
-    "moyareklama.ru": "679",
-    "unibo.ru": "1589",
-    "youla": "1707",
-    "cmlt.ru": "1712",
-    "www.remospro.ru": "1732",
-    "gorodkvadratov.ru": "1749",
-    "realtybell.ru": "2704",
-    "alsibo.com": "2987",
-    "m2.ru": "3095",
-    "ligakvartir.ru": "3154",
-    "m-sq.ru": "3263",
-    "atuta.ru": "3373",
-}
-cookies = {
-    "uid": "9175",
-    "auth_cookie": "47ecf4da9891899e892faecde82700fd",
-    "secure_key_newmain": "946db9c9c836d4539e61c3300fd26e1f",
-}
-headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-}
+from login import login
+
 url = "https://crm.lotinfo.ru/ajax/clients.php"
-client = httpx.Client()
+headers = {
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'x-requested-with': 'XMLHttpRequest',
+}
+
+client: httpx.AsyncClient = httpx.AsyncClient()
 
 
-def unpin(oid, sid):
+async def unpin(oid, sid):
     params = {
         "cmd": "advert",
         "oid": oid,
         "sid": sid,
         "c": "del",
     }
-    response = client.get(url, params=params, cookies=cookies, headers=headers)
+    response = await client.get(url, params=params, headers=headers)
     print(response.text)
 
 
-def pin(oid, sid):
+async def pin(oid, sid):
     params = {
         "cmd": "advert",
-        "oid": "552337",
-        "sid": "37",
+        "oid": oid,
+        "sid": sid,
         "c": "inAdv",
     }
 
-    response = client.get(url, params=params, cookies=cookies, headers=headers)
-    print("Выставлено" if response.text == "<input type=checkbox disabled checked>" else response.text)
+    response = await client.get(url, params=params, headers=headers)
+    print(
+        "Выставлено"
+        if response.text == "<input type=checkbox disabled checked>"
+        else response.text
+    )
 
 
-def check(oid):
-    response = client.get(f"https://crm.lotinfo.ru/object/{oid}", cookies=cookies, headers=headers)
+async def check(oid):
+    response = await client.get(
+        f"https://crm.lotinfo.ru/object/{oid}", headers=headers
+    )
     if "<font color=#FF0000><b>(архив)</b></font>" in response.text:
         return False
-    return True
+    return oid
 
 
-def main():
-    check(522463)
+async def remove_archives(oids):
+    stack = [check(oid) for oid in oids]
+    oids = [i for i in await asyncio.gather(*stack) if i]
+    return oids
 
-    # unpin(552337, 37)
-    # pin(552337, 37)
+
+async def get_oids():
     oids = []
     with open("объекты.txt", "r", encoding="utf-8") as f:
         for line in f:
             oids.append(line.strip())
+    return await remove_archives(oids)
 
-    snames = []
-    while (choose := input("Введите 1 для снятия, 2 для публикации: ")) not in ("1", "2"):
-        print("Такого варианта нет")
-        continue
 
+async def user_choice(oids):
+    ad_platforms = []
+    with open("словарь_площадок.json", encoding="utf-8") as f:
+        compare = json.loads(f.read())
+    choose = input("Введите 1 для снятия, 2 для публикации: ")
+    while choose not in ("1", "2"):
+        print("Некорректный ввод")
+        choose = input("Введите 1 для снятия, 2 для публикации: ")
     if choose == "1":
         file_name = "площадки_для_снятия.txt"
     else:
@@ -107,20 +84,30 @@ def main():
 
     with open(file_name, "r", encoding="utf-8") as f:
         for line in f:
-            snames.append(line.strip())
+            platform = line.strip()
+            if platform:
+                ad_platforms.append(platform)
 
-    print(f"{oids} будут {'сняты' if choose == '1' else 'опубликованы'} в {snames}")
+    print(f"{oids} будут {'сняты' if choose == '1' else 'опубликованы'} в {ad_platforms}")
     if input("Продолжить? (y/n) ") != "y":
         exit()
+    return (
+        unpin if choose == "1" else pin,
+        [compare[ad_platform] for ad_platform in ad_platforms]
+    )
 
-    func = unpin if choose == "1" else pin
-    for oid in oids:
-        for sname in snames:
-            if check(oid):
-                func(oid, compare[sname])
-            else:
-                print(f"{oid} в архиве")
+
+async def main():
+    await login(client)
+    oids = await get_oids()
+    task, ad_platforms = await user_choice(oids)
+    corutines = [task(oid, ad_platform) for oid in oids for ad_platform in ad_platforms]
+    while corutines:
+        await asyncio.gather(*corutines[:10])
+        await asyncio.sleep(0.5)
+        corutines = corutines[10:]
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+    input("Нажмите Enter для выхода")
