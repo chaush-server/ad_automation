@@ -63,7 +63,7 @@ async def remove_archives(oids):
 
 async def get_oids():
     oids = []
-    with open("объекты.txt", "r", encoding="utf-8") as f:
+    with open("объекты.txt", "r", encoding="utf-8-sig") as f:
         for line in f:
             oids.append(line.strip())
     return await remove_archives(oids)
@@ -71,7 +71,7 @@ async def get_oids():
 
 async def user_choice(oids):
     ad_platforms = []
-    with open("словарь_площадок.json", encoding="utf-8") as f:
+    with open("словарь_площадок.json", encoding="utf-8-sig") as f:
         compare = json.loads(f.read())
     choose = input("Введите 1 для снятия, 2 для публикации: ")
     while choose not in ("1", "2"):
@@ -82,7 +82,7 @@ async def user_choice(oids):
     else:
         file_name = "площадки_для_публикации.txt"
 
-    with open(file_name, "r", encoding="utf-8") as f:
+    with open(file_name, "r", encoding="utf-8-sig") as f:
         for line in f:
             platform = line.strip()
             if platform:
