@@ -1,5 +1,3 @@
-import asyncio
-
 import httpx
 
 
@@ -15,13 +13,3 @@ async def login(client: httpx.AsyncClient):
     }
     await client.post("https://lotinfo.ru/auth", data=data, headers=headers)
     await client.get("https://crm.lotinfo.ru/?main", headers=headers)
-
-
-async def main():
-    _client = httpx.AsyncClient()
-    await login(_client)
-    print(_client.cookies)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

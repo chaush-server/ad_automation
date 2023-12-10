@@ -16,8 +16,6 @@ headers = {
     'x-requested-with': 'XMLHttpRequest',
 }
 
-client: httpx.AsyncClient = httpx.AsyncClient()
-
 
 async def unpin(oid, sid):
     params = {
@@ -26,8 +24,11 @@ async def unpin(oid, sid):
         "sid": sid,
         "c": "del",
     }
+    if not await check(oid):
+        return print("Архив", oid)
+
     response = await client.get(url, params=params, headers=headers)
-    print(response.text)
+    print(response.text if response.text == "Снято" else 'Не снято' + response.text)
 
 
 async def pin(oid, sid):
@@ -37,13 +38,14 @@ async def pin(oid, sid):
         "sid": sid,
         "c": "inAdv",
     }
-
+    if not await check(oid):
+        return print("Архив", oid)
     response = await client.get(url, params=params, headers=headers)
-    print(
-        "Выставлено"
-        if response.text == "<input type=checkbox disabled checked>"
-        else response.text
-    )
+    if response.text == "<input type=checkbox disabled checked>":
+        print("Выставлено")
+    else:
+        print("Не выставлено" + response.text)
+        await unpin(oid, sid)
 
 
 async def check(oid):
@@ -52,26 +54,29 @@ async def check(oid):
     )
     if "<font color=#FF0000><b>(архив)</b></font>" in response.text:
         return False
-    return oid
+    return True
 
 
-async def remove_archives(oids):
-    stack = [check(oid) for oid in oids]
-    oids = [i for i in await asyncio.gather(*stack) if i]
-    return oids
+# async def remove_archives(oids):
+#     tasks = [check(oid) for oid in oids]
+#     result = []
+#     while tasks:
+#         result.extend([i for i in await asyncio.gather(*tasks[:1000]) if i])
+#         print(len(tasks))
+#         tasks = tasks[1000:]
+#     return [i for i in result if i]
 
 
 async def get_oids():
     oids = []
-    with open("объекты.txt", "r", encoding="utf-8") as f:
-        for line in f:
-            oids.append(line.strip())
-    return await remove_archives(oids)
+    with open("объекты.txt", "r", encoding="utf-8-sig") as f:
+        oids.extend(f.read().split())
+    return oids
 
 
 async def user_choice(oids):
     ad_platforms = []
-    with open("словарь_площадок.json", encoding="utf-8") as f:
+    with open("словарь_площадок.json", encoding="utf-8-sig") as f:
         compare = json.loads(f.read())
     choose = input("Введите 1 для снятия, 2 для публикации: ")
     while choose not in ("1", "2"):
@@ -81,14 +86,13 @@ async def user_choice(oids):
         file_name = "площадки_для_снятия.txt"
     else:
         file_name = "площадки_для_публикации.txt"
-
-    with open(file_name, "r", encoding="utf-8") as f:
+    with open(file_name, "r", encoding="utf-8-sig") as f:
         for line in f:
             platform = line.strip()
             if platform:
                 ad_platforms.append(platform)
 
-    print(f"{oids} будут {'сняты' if choose == '1' else 'опубликованы'} в {ad_platforms}")
+    print(f"{oids[:10]} будут {'сняты' if choose == '1' else 'опубликованы'} в {ad_platforms}")
     if input("Продолжить? (y/n) ") != "y":
         exit()
     return (
@@ -104,10 +108,11 @@ async def main():
     corutines = [task(oid, ad_platform) for oid in oids for ad_platform in ad_platforms]
     while corutines:
         await asyncio.gather(*corutines[:10])
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(.5)
         corutines = corutines[10:]
 
 
 if __name__ == "__main__":
+    client: httpx.AsyncClient = httpx.AsyncClient()
     asyncio.run(main())
     input("Нажмите Enter для выхода")
