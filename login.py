@@ -7,8 +7,8 @@ async def login(client: httpx.AsyncClient):
     }
     data = {
         'form[signup]': '1',
-        'form[phone]': '+7 952 804 67 35',
-        'form[pass]': 'Mgrasnast100',
+        'form[phone]': '+7 *** *** ** **',
+        'form[pass]': '******',
         'form[ajax]': '1',
     }
     await client.post("https://lotinfo.ru/auth", data=data, headers=headers)
