@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="cursor" version="24.0.0">
+  <diagram id="hr-sfera-msa" name="HR SFERA — МСА">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== Контейнеры (фон) ===== -->
+        <mxCell id="cont_hrsfera" value="HR SFERA&#10;[Platform]"
+          style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=8;fontSize=12;fontStyle=1;fontColor=#222222;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="820" height="590" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cont_authms" value="Микросервис авторизации&#10;[Application]"
+          style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 4;fillColor=none;strokeColor=#2E8B3D;strokeWidth=1.5;verticalAlign=bottom;align=left;spacingLeft=10;spacingBottom=6;fontSize=12;fontStyle=1;fontColor=#2E8B3D;"
+          vertex="1" parent="1">
+          <mxGeometry x="330" y="130" width="480" height="500" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Пользователь ===== -->
+        <mxCell id="user" value="&lt;b&gt;Стандартный пользователь&lt;/b&gt;&lt;br&gt;[Сотрудник X5]"
+          style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fillColor=#11406B;strokeColor=#0A2B49;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="110" y="10" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Левая колонка (LK2 / MC3 / Camunda) ===== -->
+        <mxCell id="lk2back" value="&lt;b&gt;LK2 Back&lt;/b&gt;&lt;br&gt;[aiohttp: python]&lt;br&gt;Основной бэкенд ЛК2."
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#2BA4DD;strokeColor=#1565A0;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="90" y="230" width="150" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mc3" value="&lt;b&gt;MC3: Task Service&lt;/b&gt;&lt;br&gt;[aiohttp: python]&lt;br&gt;Микросервис заявок и задач"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#2BA4DD;strokeColor=#1565A0;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="90" y="395" width="150" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="camunda" value="&lt;b&gt;LK2: Camunda&lt;/b&gt;&lt;br&gt;[BPM Engine: Java]&lt;br&gt;Выполнение бизнес-процессов"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#2BA4DD;strokeColor=#1565A0;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="90" y="560" width="150" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Микросервис авторизации ===== -->
+        <mxCell id="adminpanel" value="&lt;b&gt;Admin Panel&lt;/b&gt;&lt;br&gt;[Микросервис: Python]&lt;br&gt;Ручное редактирование групп доступа"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#26B99A;strokeColor=#1A8870;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="465" y="155" width="180" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inmemory" value="&lt;b&gt;In-Memory БД МСА&lt;/b&gt;&lt;br&gt;[Redis]&lt;br&gt;&lt;br&gt;Хранение данных"
+          style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=15;whiteSpace=wrap;html=1;fillColor=#2BA4DD;strokeColor=#1565A0;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="355" y="300" width="160" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dbmsa" value="&lt;b&gt;БД МСА&lt;/b&gt;&lt;br&gt;[PostgreSQL]&lt;br&gt;&lt;br&gt;Хранение данных"
+          style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=15;whiteSpace=wrap;html=1;fillColor=#2BA4DD;strokeColor=#1565A0;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="600" y="300" width="160" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api" value="&lt;b&gt;API Сервис&lt;/b&gt;&lt;br&gt;[Микросервис: Python]&lt;br&gt;Обработка REST-запросов на аутентификацию"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#26B99A;strokeColor=#1A8870;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="355" y="500" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="consumer" value="&lt;b&gt;Consumer&lt;/b&gt;&lt;br&gt;[Микросервис: Python]&lt;br&gt;Чтение очереди сообщений пользовательских данных"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#26B99A;strokeColor=#1A8870;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="600" y="500" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Внешние системы (справа) ===== -->
+        <mxCell id="toprgw" value="&lt;b&gt;Topr GW&lt;/b&gt;&lt;br&gt;[Application]&lt;br&gt;TOPF Gateway"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#8693A5;strokeColor=#E8632A;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="900" y="295" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hrnsi" value="&lt;b&gt;HR НСИ&lt;/b&gt;&lt;br&gt;[Application]"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#8693A5;strokeColor=#E8632A;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="900" y="410" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kafka" value="&lt;b&gt;Брокер сообщений&lt;/b&gt;&lt;br&gt;[Kafka]"
+          style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#8693A5;strokeColor=#E8632A;fontColor=#FFFFFF;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="900" y="515" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Стрелки: чёрные (основной поток) ===== -->
+        <mxCell id="e_user_lk2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#333333;fontSize=10;"
+          edge="1" parent="1" source="user" target="lk2back">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_lk2_mc3" value="Получение задач и заявок&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#333333;fontSize=10;"
+          edge="1" parent="1" source="lk2back" target="mc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_mc3_camunda" value="Создание заявок и задач&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#333333;fontSize=10;"
+          edge="1" parent="1" source="mc3" target="camunda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_topr_hrnsi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#333333;fontSize=10;"
+          edge="1" parent="1" source="toprgw" target="hrnsi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_hrnsi_kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#333333;fontSize=10;"
+          edge="1" parent="1" source="hrnsi" target="kafka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Стрелки: зелёные (авторизация и БД) ===== -->
+        <mxCell id="e_lk2_api" value="Аутентификация / авторизация пользователя&#10;Получение информации о пользователе&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="lk2back" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_mc3_api" value="Сохранение ролевых групп доступа&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="mc3" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_camunda_api" value="Получение ролей пользователя&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="camunda" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_admin_db" value="Чтение и запись данных&#10;[TCP: Binary]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="adminpanel" target="dbmsa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_api_inmem" value="Чтение и запись данных&#10;[TCP: Binary]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="api" target="inmemory">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_api_db" value="Сохранение данных&#10;[TCP: Binary]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;exitX=0.75;exitY=0;exitDx=0;exitDy=0;"
+          edge="1" parent="1" source="api" target="dbmsa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_consumer_db" value="Чтение и запись данных&#10;[TCP: Binary]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="consumer" target="dbmsa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_topr_db" value="Получение ПДн пользователя при&#10;принудительном обновлении&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="toprgw" target="dbmsa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_kafka_consumer" value="Чтение сообщений об изменении&#10;персональных данных пользователя&#10;[TCP: Binary]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#2BA84A;fontSize=10;"
+          edge="1" parent="1" source="kafka" target="consumer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Стрелки: красные (внешние ПДн) ===== -->
+        <mxCell id="e_lk2_topr" value="Получение персональных данных пользователя&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#D6322B;strokeWidth=2;fontSize=10;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;"
+          edge="1" parent="1" source="lk2back" target="toprgw">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="115" />
+              <mxPoint x="970" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_camunda_topr" value="Получение ролей пользователя&#10;[HTTPS: JSON]"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#D6322B;strokeWidth=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;"
+          edge="1" parent="1" source="camunda" target="toprgw">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="600" />
+              <mxPoint x="860" y="356" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
